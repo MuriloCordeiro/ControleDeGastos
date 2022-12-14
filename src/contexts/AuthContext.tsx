@@ -19,6 +19,7 @@ import {
 import Router from "next/router";
 import { auth } from "../services/firebase";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { Toast } from "@chakra-ui/react";
 
 // type User = {
 //   // uid: string | null
@@ -59,7 +60,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     signInWithPopup(auth, provider)
       .then((result) => {
-        console.log(result.user.uid);
         setUser(result.user);
         if (user) {
           // setToken(result.user.uid);
@@ -108,7 +108,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ signInEmailPassword, user, signInWithGoogle, isAuthenticated }}
+      value={{
+        signInEmailPassword,
+        user,
+        signInWithGoogle,
+        isAuthenticated,
+      }}
     >
       {children}
     </AuthContext.Provider>
