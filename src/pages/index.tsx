@@ -25,11 +25,11 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   User,
-  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useState } from "react";
-import SignUpPage from "../components/SignUp";
+
+import SignUp from "../components/SignUp";
 // import { useAuth } from "../contexts/AuthContext";
 export default function HomeLogin() {
   const Router = useRouter();
@@ -58,7 +58,7 @@ export default function HomeLogin() {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-
+  const { user, signInWithGoogle, signInEmailPassword } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // const [user, setUser] = useState<User>({} as User);
@@ -76,19 +76,14 @@ export default function HomeLogin() {
   //     });
   // }
 
-  function handleCreateUser() {
-    // const emailprovider = new createUserWithEmailAndPassword(email, password);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((result) => {
-        // window.alert("deu boa");
-        console.log("result", result);
-      })
-      .catch((error) => {
-        // window.alert("não deu boa");
-        console.log("error", error);
-      });
+  async function handleLogin(email: string, password: string) {
+    const response = await signInEmailPassword(email, password);
+    if (response) {
+      console.log("deu boa", response);
+    } else {
+      console.log("não deu boa", response);
+    }
   }
-  const { user, signInWithGoogle } = useAuth();
 
   return (
     <>
@@ -182,6 +177,9 @@ export default function HomeLogin() {
                     // bgColor="#011735"
                     variant="outline"
                     color="white"
+                    onClick={() => {
+                      handleLogin(email, password);
+                    }}
                   >
                     Entrar
                   </Button>
@@ -195,17 +193,21 @@ export default function HomeLogin() {
                   >
                     Entrar com google
                   </Button>
+
+                  {/* const { isOpen, onOpen, onClose } = useDisclosure(); */}
                   <Button
                     mt="1rem"
                     borderRadius="10px"
                     // bgColor="#011735"
                     variant="outline"
                     color="white"
-                    onClick={handleCreateUser}
-                    // onClick={onOpen}
+                    // onClick={handleCreateUser}
+                    onClick={onOpen}
                   >
                     Criar uma conta
                   </Button>
+
+                  <SignUp isOpen={isOpen} onClose={onClose} />
                 </Flex>
               </Flex>
             </Flex>
